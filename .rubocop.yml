@@ -1,0 +1,7 @@
+Metrics/LineLength:
+  Max: 80
+  Exclude:
+    - '*.gemspec'
+
+Style/Documentation:
+  Enabled: true
