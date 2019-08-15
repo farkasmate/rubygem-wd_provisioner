@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wd-provisioner
+  labels:
+    app: wd-provisioner
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app: wd-provisioner
+  template:
+    metadata:
+      labels:
+        app: wd-provisioner
+    spec:
+      serviceAccountName: wd-provisioner
+      containers:
+        - name: provisioner
+          image: matefarkas/wd-provisioner:test
+          command: [/bundle/controller.rb]
+          volumeMounts:
+            - name: controller-script
+              mountPath: /bundle/
+      volumes:
+        - name: controller-script
+          configMap:
+            name: controller-script
+            defaultMode: 0700
