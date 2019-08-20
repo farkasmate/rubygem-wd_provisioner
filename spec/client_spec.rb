@@ -11,7 +11,15 @@ describe WdProvisioner::Client do
     expect(@client.pvcs).not_to be_empty
   end
 
-  it 'can emit events' do
+  it 'can emit event' do
     expect { @client.create_pvc_event('Hello World', @client.pvcs.first) }.not_to raise_error
+  end
+
+  it 'can create persistent volume' do
+    pvc = @client.pvcs.first
+    name = pvc.metadata.name
+    capacity = pvc.spec.resources.requests.storage
+
+    expect { @client.create_pv(name, capacity) }.not_to raise_error
   end
 end

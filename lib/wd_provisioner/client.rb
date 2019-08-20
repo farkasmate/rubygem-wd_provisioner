@@ -22,5 +22,9 @@ module WdProvisioner
     def create_pvc_event(message, pvc)
       @client.create_event(Event.new(message, pvc))
     end
+
+    def create_pv(name, capacity)
+      @client.create_persistent_volume(PersistentVolume.new(name, capacity))
+    end
   end
 end
