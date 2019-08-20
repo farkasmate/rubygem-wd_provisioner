@@ -40,8 +40,8 @@ module WdProvisioner
           name: template-claim
           namespace: default
           uid: template-uid
-        firstTimestamp: 1970-01-01T00:00:00Z
-        lastTimestamp: 1970-01-01T00:00:00Z
+        firstTimestamp: '1970-01-01T00:00:00Z'
+        lastTimestamp: '1970-01-01T00:00:00Z'
       EVENT
     end
   end
