@@ -15,16 +15,16 @@ module WdProvisioner
       )
     end
 
-    def pvcs
-      @client.get_persistent_volume_claims.select { |pvc| pvc.spec.storageClassName == 'wd' && pvc.spec.volumeName.nil? }
+    def create_pv(name, capacity)
+      @client.create_persistent_volume(PersistentVolume.new(name, capacity))
     end
 
     def create_pvc_event(message, pvc)
       @client.create_event(Event.new(message, pvc))
     end
 
-    def create_pv(name, capacity)
-      @client.create_persistent_volume(PersistentVolume.new(name, capacity))
+    def pvcs
+      @client.get_persistent_volume_claims.select { |pvc| pvc.spec.storageClassName == 'wd' && pvc.spec.volumeName.nil? }
     end
   end
 end
