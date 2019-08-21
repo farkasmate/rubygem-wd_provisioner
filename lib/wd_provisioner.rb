@@ -6,6 +6,5 @@ require 'wd_provisioner/persistent_volume'
 require 'wd_provisioner/version'
 
 module WdProvisioner
-  class Error < StandardError; end
-  # Your code goes here...
+  PROVISIONER_NAME = 'farkasmate.github.io/wd-provisioner'
 end

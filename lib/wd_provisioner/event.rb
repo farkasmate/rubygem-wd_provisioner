@@ -32,7 +32,7 @@ module WdProvisioner
         type: Normal
         reason: ExternalProvisioning
         source:
-          component: wd-provisioner
+          component: #{WdProvisioner::PROVISIONER_NAME}
         message: Template message
         involvedObject:
           apiVersion: v1

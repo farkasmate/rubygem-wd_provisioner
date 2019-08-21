@@ -22,7 +22,7 @@ module WdProvisioner
         metadata:
           name: template-pv
           annotations:
-            pv.kubernetes.io/provisioned-by: wd-provisioner
+            pv.kubernetes.io/provisioned-by: #{WdProvisioner::PROVISIONER_NAME}
         spec:
           storageClassName: wd
           capacity:

@@ -28,11 +28,15 @@ module WdProvisioner
     end
 
     def pvcs
-      @client.get_persistent_volume_claims.select { |pvc| pvc.spec.storageClassName == 'wd' && pvc.spec.volumeName.nil? }
+      @client.get_persistent_volume_claims.select do |pvc|
+        pvc.metadata.annotations['volume.beta.kubernetes.io/storage-provisioner'] == WdProvisioner::PROVISIONER_NAME && pvc.spec.volumeName.nil?
+      end
     end
 
     def pvs
-      @client.get_persistent_volumes.select { |pv| pv.metadata.annotations['pv.kubernetes.io/provisioned-by'] == 'wd-provisioner' && pv.status.phase == 'Released' }
+      @client.get_persistent_volumes.select do |pv|
+        pv.metadata.annotations['pv.kubernetes.io/provisioned-by'] == WdProvisioner::PROVISIONER_NAME && pv.status.phase == 'Released'
+      end
     end
   end
 end
