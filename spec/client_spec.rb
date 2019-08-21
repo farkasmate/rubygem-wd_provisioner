@@ -22,4 +22,11 @@ describe WdProvisioner::Client do
 
     expect { @client.create_pv(name, capacity) }.not_to raise_error
   end
+
+  it 'can delete persistent volume' do
+    pv = @client.pvs.first
+    name = pv.metadata.name
+
+    expect { @client.delete_pv(name) }.not_to raise_error
+  end
 end

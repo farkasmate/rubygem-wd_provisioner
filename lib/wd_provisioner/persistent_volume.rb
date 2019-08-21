@@ -21,6 +21,8 @@ module WdProvisioner
         kind: PersistentVolume
         metadata:
           name: template-pv
+          annotations:
+            pv.kubernetes.io/provisioned-by: wd-provisioner
         spec:
           storageClassName: wd
           capacity:

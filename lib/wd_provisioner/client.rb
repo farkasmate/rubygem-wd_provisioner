@@ -23,8 +23,16 @@ module WdProvisioner
       @client.create_event(Event.new(message, pvc))
     end
 
+    def delete_pv(name)
+      @client.delete_persistent_volume(name)
+    end
+
     def pvcs
       @client.get_persistent_volume_claims.select { |pvc| pvc.spec.storageClassName == 'wd' && pvc.spec.volumeName.nil? }
+    end
+
+    def pvs
+      @client.get_persistent_volumes.select { |pv| pv.metadata.annotations['pv.kubernetes.io/provisioned-by'] == 'wd-provisioner' && pv.status.phase == 'Released' }
     end
   end
 end
