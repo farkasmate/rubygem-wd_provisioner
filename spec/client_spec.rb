@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable Metrics/BlockLength
 describe WdProvisioner::Client do
   before :all do
     @client = WdProvisioner::Client.new
@@ -29,4 +30,13 @@ describe WdProvisioner::Client do
 
     expect { @client.delete_pv(name) }.not_to raise_error
   end
+
+  it 'has `wd` storage class' do
+    expect { @client.storage_class('wd') }.not_to raise_error
+  end
+
+  it 'fails on non-existing storage class' do
+    expect { @client.storage_class('none') }.to raise_error(WdProvisioner::ResourceNotFoundError)
+  end
 end
+# rubocop:enable Metrics/BlockLength
