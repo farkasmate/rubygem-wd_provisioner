@@ -6,18 +6,25 @@ require 'spec_helper'
 describe WdProvisioner::Client do
   before :all do
     @client = WdProvisioner::Client.new
+
+    Thread.new do
+      sleep 1
+      @client.finish_watchers
+    end
+    @pvcs = []
+    @client.pvcs { |pvc| @pvcs << pvc }
   end
 
   it 'has pvcs' do
-    expect(@client.pvcs).not_to be_empty
+    expect(@pvcs).not_to be_empty
   end
 
   it 'can emit event' do
-    expect { @client.create_pvc_event('Hello World', @client.pvcs.first) }.not_to raise_error
+    expect { @client.create_pvc_event('Hello World', @pvcs.first) }.not_to raise_error
   end
 
   it 'can create persistent volume' do
-    pvc = @client.pvcs.first
+    pvc = @pvcs.first
     name = pvc.metadata.name
     capacity = pvc.spec.resources.requests.storage
 

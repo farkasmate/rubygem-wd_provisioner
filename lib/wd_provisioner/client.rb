@@ -41,9 +41,18 @@ module WdProvisioner
       @client_core.delete_persistent_volume(name)
     end
 
+    def finish_watchers
+      @pvc_watcher&.finish
+    end
+
     def pvcs
-      @client_core.get_persistent_volume_claims.select do |pvc|
-        pvc.metadata.annotations['volume.beta.kubernetes.io/storage-provisioner'] == WdProvisioner::PROVISIONER_NAME && pvc.spec.volumeName.nil?
+      @pvc_watcher = @client_core.watch_persistent_volume_claims
+      @pvc_watcher.each do |watch_event|
+        next unless watch_event.type == 'ADDED'
+        next unless watch_event.object.metadata.annotations['volume.beta.kubernetes.io/storage-provisioner'] == WdProvisioner::PROVISIONER_NAME
+        next unless watch_event.object.spec.volumeName.nil?
+
+        yield watch_event.object
       end
     end
 
