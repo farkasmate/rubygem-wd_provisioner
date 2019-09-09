@@ -4,12 +4,16 @@ require 'kubeclient'
 
 module WdProvisioner
   class Event < Kubeclient::Resource
-    def initialize(message, involved_object)
+    NORMAL = 'Normal'
+    WARNING = 'Warning'
+
+    def initialize(type, message, involved_object)
       event = RecursiveOpenStruct.new(YAML.safe_load(template_event))
 
       name = involved_object.metadata.name
       time = Event.timestamp
 
+      event.type = type
       event.message = message
       event.metadata.name = "#{name}.#{time}"
       event.involvedObject.name = name

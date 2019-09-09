@@ -33,8 +33,8 @@ module WdProvisioner
       @client_core.create_persistent_volume(PersistentVolume.new(name, capacity))
     end
 
-    def create_pvc_event(message, pvc)
-      event = lookup_event(message, pvc)
+    def create_pvc_event(type, message, pvc)
+      event = lookup_event(type, message, pvc)
 
       if event
         prevoius_count = event.count || 1
@@ -42,7 +42,7 @@ module WdProvisioner
         event.lastTimestamp = Event.timestamp
         @client_core.update_event(event)
       else
-        event = Event.new(message, pvc)
+        event = Event.new(type, message, pvc)
         @client_core.create_event(event)
       end
     end
@@ -73,9 +73,10 @@ module WdProvisioner
 
     private
 
-    def lookup_event(message, involved_object)
+    def lookup_event(type, message, involved_object)
       @client_core.get_events.find do |event|
         event.source.component == WdProvisioner::PROVISIONER_NAME &&
+          event.type == type &&
           event.message == message &&
           event.involvedObject.namespace == involved_object.metadata.namespace &&
           event.involvedObject.kind == involved_object.kind &&

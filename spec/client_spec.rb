@@ -13,7 +13,7 @@ describe WdProvisioner::Client do
   end
 
   it 'can emit event' do
-    expect { @client.create_pvc_event('Hello World', @client.pvcs.first) }.not_to raise_error
+    expect { @client.create_pvc_event(WdProvisioner::Event::NORMAL, 'Hello World', @client.pvcs.first) }.not_to raise_error
   end
 
   it 'can create persistent volume' do

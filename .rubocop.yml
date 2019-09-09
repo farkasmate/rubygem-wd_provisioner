@@ -3,7 +3,7 @@ AllCops:
     - poc/*
 
 Metrics/AbcSize:
-  Max: 20
+  Max: 25
 
 Metrics/LineLength:
   Max: 160
