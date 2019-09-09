@@ -34,7 +34,17 @@ module WdProvisioner
     end
 
     def create_pvc_event(message, pvc)
-      @client_core.create_event(Event.new(message, pvc))
+      event = lookup_event(message, pvc)
+
+      if event
+        prevoius_count = event.count || 1
+        event.count = prevoius_count + 1
+        event.lastTimestamp = Event.timestamp
+        @client_core.update_event(event)
+      else
+        event = Event.new(message, pvc)
+        @client_core.create_event(event)
+      end
     end
 
     def delete_pv(name)
@@ -42,21 +52,35 @@ module WdProvisioner
     end
 
     def pvcs
-      @client_core.get_persistent_volume_claims.select do |pvc|
+      pvcs = @client_core.get_persistent_volume_claims.select do |pvc|
         pvc.metadata.annotations['volume.beta.kubernetes.io/storage-provisioner'] == WdProvisioner::PROVISIONER_NAME && pvc.spec.volumeName.nil?
       end
+      pvcs.each { |pvc| pvc.kind = 'PersistentVolumeClaim' }
     end
 
     def pvs
-      @client_core.get_persistent_volumes.select do |pv|
+      pvs = @client_core.get_persistent_volumes.select do |pv|
         pv.metadata.annotations['pv.kubernetes.io/provisioned-by'] == WdProvisioner::PROVISIONER_NAME && pv.status.phase == 'Released'
       end
+      pvs.each { |pv| pv.kind = 'PersistentVolume' }
     end
 
     def storage_class(name)
       @client_storage.get_storage_class(name)
     rescue Kubeclient::ResourceNotFoundError => e
       raise ResourceNotFoundError.new, e.message
+    end
+
+    private
+
+    def lookup_event(message, involved_object)
+      @client_core.get_events.find do |event|
+        event.source.component == WdProvisioner::PROVISIONER_NAME &&
+          event.message == message &&
+          event.involvedObject.namespace == involved_object.metadata.namespace &&
+          event.involvedObject.kind == involved_object.kind &&
+          event.involvedObject.name == involved_object.metadata.name
+      end
     end
   end
 end

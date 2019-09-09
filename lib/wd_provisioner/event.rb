@@ -8,7 +8,7 @@ module WdProvisioner
       event = RecursiveOpenStruct.new(YAML.safe_load(template_event))
 
       name = involved_object.metadata.name
-      time = Time.now.iso8601(6)
+      time = Event.timestamp
 
       event.message = message
       event.metadata.name = "#{name}.#{time}"
@@ -18,6 +18,10 @@ module WdProvisioner
       event.lastTimestamp = time
 
       super(event.to_h)
+    end
+
+    def self.timestamp
+      Time.now.iso8601(6)
     end
 
     private
