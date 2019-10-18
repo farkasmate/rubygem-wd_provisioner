@@ -4,6 +4,7 @@ module WdProvisioner
   class Provisioner
     def initialize
       @client = WdProvisioner::Client.new
+      @wd = WdProvisioner::WdClient.new
     end
 
     def run
@@ -14,15 +15,19 @@ module WdProvisioner
         end
 
         storage_class_name = pvc.spec.storageClassName
+        name = pvc.metadata.name
+        capacity = pvc.spec.resources.requests.storage
+
         begin
           storage_class = @client.storage_class(storage_class_name)
           # TODO: Parse parameters
-          # TODO: Provision share
-          # TODO: Create PV
+          @wd.create(name)
+          @client.create_pv(name, capacity)
         rescue WdProvisioner::ResourceNotFoundError => e
           @client.create_pvc_event(Event::WARNING, e.message, pvc)
         end
       end
+      # TODO: Delete
       # TODO: Loop
     end
   end
