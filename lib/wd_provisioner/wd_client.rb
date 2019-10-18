@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
-require 'wdmc/client'
-require 'wdmc/config'
+require 'wd_provisioner/wdmc/client'
 
 module WdProvisioner
   class WdClient
-    def initialize
-      @wdmc = Wdmc::Client.new
+    def initialize(url, username, password)
+      @wdmc = WdProvisioner::Wdmc::Client.new(url, username, password)
     end
 
     def create(name)

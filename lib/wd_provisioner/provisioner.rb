@@ -4,7 +4,6 @@ module WdProvisioner
   class Provisioner
     def initialize
       @client = WdProvisioner::Client.new
-      @wd = WdProvisioner::WdClient.new
     end
 
     def run
@@ -20,8 +19,8 @@ module WdProvisioner
 
         begin
           storage_class = @client.storage_class(storage_class_name)
-          # TODO: Parse parameters
-          @wd.create(name)
+          wd = WdProvisioner::WdClient.new(storage_class.parameters.url, storage_class.parameters.username, storage_class.parameters.password)
+          wd.create(name)
           @client.create_pv(name, capacity)
         rescue WdProvisioner::ResourceNotFoundError => e
           @client.create_pvc_event(Event::WARNING, e.message, pvc)
