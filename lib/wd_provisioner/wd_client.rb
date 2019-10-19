@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'base64'
 require 'wd_provisioner/wdmc/client'
 
 module WdProvisioner
@@ -8,8 +9,8 @@ module WdProvisioner
       @wdmc = WdProvisioner::Wdmc::Client.new(url, username, password)
     end
 
-    def create(name)
-      add_user(name)
+    def create(name, password)
+      add_user(name, password)
       add_share(name)
     end
 
@@ -20,14 +21,14 @@ module WdProvisioner
 
     private
 
-    def add_user(name)
+    def add_user(name, password)
       raise UserAlreadyExistsError.new, "User '#{name}' exists" unless @wdmc.user_exists?(name).empty?
 
       begin
         @wdmc.add_user(
           email: nil,
           username: name,
-          password: 'czNjcjN0', # base64(s3cr3t) # TODO: Create secret
+          password: Base64.strict_encode64(password),
           fullname: nil,
           is_admin: nil,
           group_names: 'cloudholders', # FIXME: ?

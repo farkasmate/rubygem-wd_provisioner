@@ -47,6 +47,13 @@ module WdProvisioner
       end
     end
 
+    def create_secret(name)
+      secret = Secret.new(name)
+      @client_core.create_secret(secret)
+
+      secret.password
+    end
+
     def delete_pv(name)
       @client_core.delete_persistent_volume(name)
     end

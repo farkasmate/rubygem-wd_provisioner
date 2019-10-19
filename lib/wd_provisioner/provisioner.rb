@@ -18,9 +18,11 @@ module WdProvisioner
         capacity = pvc.spec.resources.requests.storage
 
         begin
-          storage_class = @client.storage_class(storage_class_name)
-          wd = WdProvisioner::WdClient.new(storage_class.parameters.url, storage_class.parameters.username, storage_class.parameters.password)
-          wd.create(name)
+          pv_password = @client.create_secret(name)
+          url, username, wd_password = credentials(storage_class_name)
+          wd = WdProvisioner::WdClient.new(url, username, wd_password)
+
+          wd.create(name, pv_password)
           @client.create_pv(name, capacity)
         rescue WdProvisioner::ResourceNotFoundError => e
           @client.create_pvc_event(Event::WARNING, e.message, pvc)
@@ -28,6 +30,14 @@ module WdProvisioner
       end
       # TODO: Delete
       # TODO: Loop
+    end
+
+    private
+
+    def credentials(storage_class_name)
+      storage_class = @client.storage_class(storage_class_name)
+
+      [storage_class.parameters.url, storage_class.parameters.username, storage_class.parameters.password]
     end
   end
 end

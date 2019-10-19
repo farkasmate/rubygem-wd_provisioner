@@ -5,6 +5,7 @@ require 'wd_provisioner/error'
 require 'wd_provisioner/event'
 require 'wd_provisioner/persistent_volume'
 require 'wd_provisioner/provisioner'
+require 'wd_provisioner/secret'
 require 'wd_provisioner/version'
 require 'wd_provisioner/wd_client'
 
