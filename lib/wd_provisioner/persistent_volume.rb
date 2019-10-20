@@ -9,6 +9,8 @@ module WdProvisioner
 
       pv.metadata.name = name
       pv.spec.capacity.storage = capacity
+      pv.spec.nfs.path = "/nfs/#{name}"
+      pv.spec.nfs.server = 'nas'
 
       super(pv.to_h)
     end
@@ -29,8 +31,9 @@ module WdProvisioner
             storage: 1Mi
           accessModes:
             - ReadWriteOnce
-          hostPath:
-            path: /dev/null
+          nfs:
+            path: /share
+            server: localhost
       PV
     end
   end

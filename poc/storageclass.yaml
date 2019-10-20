@@ -3,3 +3,7 @@ kind: StorageClass
 metadata:
   name: wd
 provisioner: farkasmate.github.io/wd-provisioner
+parameters:
+  url: https://nas
+  username: provisioner
+  passwordSecret: wd-password

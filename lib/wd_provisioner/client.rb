@@ -47,6 +47,13 @@ module WdProvisioner
       end
     end
 
+    def create_secret(name)
+      secret = Secret.new(name)
+      @client_core.create_secret(secret)
+
+      secret.password
+    end
+
     def delete_pv(name)
       @client_core.delete_persistent_volume(name)
     end
@@ -63,6 +70,11 @@ module WdProvisioner
         pv.metadata.annotations['pv.kubernetes.io/provisioned-by'] == WdProvisioner::PROVISIONER_NAME && pv.status.phase == 'Released'
       end
       pvs.each { |pv| pv.kind = 'PersistentVolume' }
+    end
+
+    def secret(name)
+      encoded_password = @client_core.get_secret(name, 'default').data.password
+      Base64.strict_decode64(encoded_password)
     end
 
     def storage_class(name)

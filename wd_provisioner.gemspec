@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '~> 0.74'
 
   spec.add_dependency 'kubeclient', '~> 4.4'
+  spec.add_dependency 'wdmc', '~> 0.1'
 end
