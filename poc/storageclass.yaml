@@ -5,5 +5,5 @@ metadata:
 provisioner: farkasmate.github.io/wd-provisioner
 parameters:
   url: https://nas
-  username: admin
-  password: adminpass
+  username: provisioner
+  passwordSecret: wd-password

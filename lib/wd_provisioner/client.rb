@@ -72,6 +72,11 @@ module WdProvisioner
       pvs.each { |pv| pv.kind = 'PersistentVolume' }
     end
 
+    def secret(name)
+      encoded_password = @client_core.get_secret(name, 'default').data.password
+      Base64.strict_decode64(encoded_password)
+    end
+
     def storage_class(name)
       @client_storage.get_storage_class(name)
     rescue Kubeclient::ResourceNotFoundError => e

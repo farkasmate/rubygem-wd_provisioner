@@ -36,8 +36,9 @@ module WdProvisioner
 
     def credentials(storage_class_name)
       storage_class = @client.storage_class(storage_class_name)
+      password = @client.secret(storage_class.parameters.passwordSecret)
 
-      [storage_class.parameters.url, storage_class.parameters.username, storage_class.parameters.password]
+      [storage_class.parameters.url, storage_class.parameters.username, password]
     end
   end
 end
