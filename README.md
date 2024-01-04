@@ -1,5 +1,9 @@
 # WD provisioner [WIP]
 
+**Superseded by https://github.com/farkasmate/wd_provisioner**
+
+---
+
 Kubernetes PersistentVolume provisioner for Western Digital NAS.
 
 ## Links
